@@ -7,3 +7,9 @@
     font-family: 'Nunito', sans-serif;
 
 }
+
+@media screen and (max-height: 730px) {
+    img {
+        display: none;
+    }
+}

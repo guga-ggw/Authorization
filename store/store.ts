@@ -1,17 +1,17 @@
-import { combineReducers } from "redux";
-import { configureStore } from "@reduxjs/toolkit";
-import { useDispatch, useSelector, TypedUseSelectorHook } from "react-redux";
-import registrationSlice from "./registration/registration.slice";
-
-
+import { combineReducers, configureStore } from '@reduxjs/toolkit';
+import formSlice from './registration/registration.slice';
 
 const rootReducer = combineReducers({
-    Registration: registrationSlice,
+  formReducer: formSlice,
 });
 
-export const store = configureStore({
-    reducer: rootReducer,
-});
+const makeStore = () => {
+  return configureStore({
+    reducer: rootReducer, // Pass rootReducer directly, not inside an object
+  });
+};
 
-export const useAppDispatch = () => useDispatch();
-export const useAppSelector: TypedUseSelectorHook<ReturnType<typeof rootReducer>> = useSelector;
+export default makeStore;
+export type AppStore = ReturnType<typeof makeStore>;
+export type RootState = ReturnType<AppStore['getState']>;
+export type AppDispatch = AppStore['dispatch'];

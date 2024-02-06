@@ -21,14 +21,14 @@ const PageSlice = createSlice({
     name: "registration",
     initialState,
     reducers: {
-        nextStep : (state) => {
-            state.firstStep = true
+        nextStep : (state, action) => {
+            state.firstStep = action.payload
         },
-        finishRegistration : (state) => {
-            state.finish = true
+        finishRegistration : (state, action) => {
+            state.finish = action.payload
         }
     },
 });
 
-export const {nextStep} = PageSlice.actions
+export const {nextStep, finishRegistration} = PageSlice.actions
 export default PageSlice.reducer;
