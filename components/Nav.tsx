@@ -6,9 +6,6 @@ import { motion } from 'framer-motion'
 
 const Nav = () => {
     const nextstep = useAppSelector(state => state.formReducer.firstStep)
-
-    console.log(nextstep)
-
     return (
         <div className='w-full flex h-[15vh] justify-around items-center'>
             <div className='w-full flex h-24 justify-around items-center lg:w-[500px]'>
