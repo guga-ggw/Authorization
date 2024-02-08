@@ -17,6 +17,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 const Page = () => {
   const isdone = useAppSelector((state) => state.formReducer.finish);
   const nextstep = useAppSelector((state) => state.formReducer.firstStep);
+  const name = useAppSelector((state) => state.formReducer.userInfo.name)
+  const NickName = useAppSelector((state) => state.formReducer.userInfo.NickName)
   const dispatch = useAppDispatch();
 
   const router = useRouter();
@@ -24,7 +26,7 @@ const Page = () => {
   const handleFinishRegistration = () => {
     dispatch(finishRegistration(true));
     dispatch(nextStep(false))
-    router.push('/login');
+    // router.push('/login');
   }
 
   type TPrivateDetailsSchema = z.infer<typeof PrivateDetailsSchema>
@@ -60,11 +62,63 @@ const Page = () => {
     dispatch(nextStep(true))
     reset()
   }
+  const Psubmit = async (data: TPrivateDetailsSchema | TKnownAsSchema) => {
+    if ('email' in data) {
+        // Handle form submission for private details
+        handleFinishRegistration();
+        
+        try {
+            // Make a POST request to the registration API endpoint for private details
+            const response = await fetch('/api/registration', {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    name,
+                    NickName,
+                    email: data.email,
+                    password: data.password
+                })
+            });
 
-  const Psubmit = (data: TPrivateDetailsSchema | TKnownAsSchema) => {
-    dispatch(setUser({email : data.email, password : data.password}))
-    handleFinishRegistration()
-  }
+            // Check if the request was successful
+            if (response.ok) {
+                console.log("Private details submitted successfully");
+            } else {
+                throw new Error("Failed to submit private details");
+            }
+        } catch (error) {
+            console.error("Error submitting private details:", error);
+            // Handle errors
+        }
+    } else {
+        // Handle form submission for known-as details
+        try {
+            // Make a POST request to the registration API endpoint for known-as details
+            const response = await fetch('/api/registration', {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    name: data.name,
+                    NickName: data.NickName
+                })
+            });
+
+            // Check if the request was successful
+            if (response.ok) {
+                console.log("Known-as details submitted successfully");
+            } else {
+                throw new Error("Failed to submit known-as details");
+            }
+        } catch (error) {
+            console.error("Error submitting known-as details:", error);
+            // Handle errors
+        }
+    }
+}
 
   return (
     <div className='w-full min-h-full'>
