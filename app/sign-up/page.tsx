@@ -62,63 +62,29 @@ const Page = () => {
     dispatch(nextStep(true))
     reset()
   }
+
   const Psubmit = async (data: TPrivateDetailsSchema | TKnownAsSchema) => {
     if ('email' in data) {
-        // Handle form submission for private details
-        handleFinishRegistration();
-        
-        try {
-            // Make a POST request to the registration API endpoint for private details
-            const response = await fetch('/api/registration', {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    name,
-                    NickName,
-                    email: data.email,
-                    password: data.password
-                })
-            });
-
-            // Check if the request was successful
-            if (response.ok) {
-                console.log("Private details submitted successfully");
-            } else {
-                throw new Error("Failed to submit private details");
-            }
-        } catch (error) {
-            console.error("Error submitting private details:", error);
-            // Handle errors
-        }
+      handleFinishRegistration();
+      
+      try {
+        await fetch('api/registration', {
+          method : "POST",
+          headers : {
+            "Content-Type" : "application/json"
+          },
+          body : JSON.stringify({
+            name,
+            NickName,
+            email : data.email,
+            password : data.password
+          })
+        });
+      } catch (error) {
+      }
     } else {
-        // Handle form submission for known-as details
-        try {
-            // Make a POST request to the registration API endpoint for known-as details
-            const response = await fetch('/api/registration', {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    name: data.name,
-                    NickName: data.NickName
-                })
-            });
-
-            // Check if the request was successful
-            if (response.ok) {
-                console.log("Known-as details submitted successfully");
-            } else {
-                throw new Error("Failed to submit known-as details");
-            }
-        } catch (error) {
-            console.error("Error submitting known-as details:", error);
-            // Handle errors
-        }
     }
-}
+  };
 
   return (
     <div className='w-full min-h-full'>
