@@ -53,6 +53,7 @@ const Page = () => {
     handleSubmit,
     formState: { errors, isSubmitting },
     reset,
+    setError
   } = useForm<TPrivateDetailsSchema>({
     resolver : zodResolver(validationSchema),
   })
@@ -64,27 +65,46 @@ const Page = () => {
   }
 
   const Psubmit = async (data: TPrivateDetailsSchema | TKnownAsSchema) => {
-    if ('email' in data) {
-      handleFinishRegistration();
-      
+    if (typeof data === 'object' && 'email' in data) {
+      const { email } = data;
       try {
-        await fetch('api/registration', {
-          method : "POST",
-          headers : {
-            "Content-Type" : "application/json"
+        const isExist = await fetch('api/alreadyExist', {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
           },
-          body : JSON.stringify({
+          body: JSON.stringify({ email })
+        });
+  
+        const { user } = await isExist.json();
+  
+        if (user) {
+          setError('email', {
+            type: "manual",
+            message: "User with this email already exists"
+          });
+          return
+        }
+  
+        await fetch('api/registration', {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
             name,
             NickName,
-            email : data.email,
-            password : data.password
+            email: data,
+            password: data.password
           })
         });
       } catch (error) {
       }
     } else {
+      
     }
-  };
+    handleFinishRegistration();
+  }
 
   return (
     <div className='w-full min-h-full'>
