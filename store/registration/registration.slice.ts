@@ -7,7 +7,8 @@ type Istate = {
     createAccount : boolean,
     Login : boolean,
     userInfo : Infouser,
-    User : user
+    User : user,
+    LoginError : boolean,
 }
 type Infouser = {
     name : string,
@@ -31,7 +32,8 @@ const initialState : Istate = {
         NickName : "",
         email : "",
         password : ""
-    }
+    },
+    LoginError : false
 };
 
 
@@ -51,9 +53,12 @@ const PageSlice = createSlice({
         },
         setUser : (state, action) => {
             state.User = {name : state.userInfo.name, NickName : state.userInfo.NickName, email : action.payload.email, password : action.payload.password}
+        },
+        setLoginErr : (state) => {
+            state.LoginError = !state.LoginError
         }
     },
 });
 
-export const {nextStep, finishRegistration, setUserInfo, setUser} = PageSlice.actions
+export const {nextStep, finishRegistration, setUserInfo, setUser, setLoginErr} = PageSlice.actions
 export default PageSlice.reducer;

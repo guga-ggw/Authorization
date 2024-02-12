@@ -1,6 +1,6 @@
 'use client'
 import { useAppDispatch, useAppSelector } from '@/store/hooks'
-import { finishRegistration } from '@/store/registration/registration.slice'
+import { finishRegistration, setLoginErr } from '@/store/registration/registration.slice'
 import Image from 'next/image'
 import Link from 'next/link'
 import React, { useEffect } from 'react'
@@ -8,11 +8,13 @@ import {motion} from 'framer-motion'
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { signIn } from 'next-auth/react'
+import { useRouter } from 'next/navigation'
 
 const Page = () => {
     const dispatch = useAppDispatch()
-  const user = useAppSelector(state => state.formReducer.User)
-
+    const route = useRouter()
+    const error = useAppSelector(state => state.formReducer.LoginError)
     type TsignInSchema = z.infer<typeof LoginSchema>
 
   const LoginSchema = z.object({
@@ -25,13 +27,37 @@ const Page = () => {
     handleSubmit,
     formState: { errors, isSubmitting },
     reset,
+    setError
   } = useForm<TsignInSchema>({
     resolver : zodResolver(LoginSchema),
   })
 
-  const Fsubmit = (data : TsignInSchema) => {
-    console.log(data); 
-  }
+  const Fsubmit = async (data: TsignInSchema) => {
+    try {
+        const res = await signIn('credentials', {
+            email: data.email,
+            password: data.password,
+            redirect: false
+        });
+        if (res?.ok) {
+          route.replace('dashboard');
+        }
+        
+        else {
+          if(res?.error === "wrong password"){
+            res?.error == 'wrong password' ? setError('password', {type : "manual", message : "wrong password"}) : ""}
+            else{
+              setError('email' && 'password', {
+                type: "manual",
+                message: "this account does not exist"
+              });
+            }
+        
+        }
+    } catch (error) {
+        console.log('bugged');
+    }
+};
 
 
   return (
@@ -54,7 +80,7 @@ const Page = () => {
         <motion.div initial={{opacity :0}} animate={{opacity : 1}} transition={{delay : .8, duration : 1}} className='mt-7'>
           <Link  className='text-blue-800 mt-7' href={'/'}> Do not have an account ? </Link>
         </motion.div>
-        
+        {error ? (<h1>Hello</h1>) : <></>}
     </form>
   </div>
   )

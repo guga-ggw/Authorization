@@ -66,7 +66,7 @@ const Page = () => {
 
   const Psubmit = async (data: TPrivateDetailsSchema | TKnownAsSchema) => {
     if (typeof data === 'object' && 'email' in data) {
-      const { email } = data;
+      const { email } = data
       try {
         const isExist = await fetch('api/alreadyExist', {
           method: "POST",
@@ -82,7 +82,7 @@ const Page = () => {
           setError('email', {
             type: "manual",
             message: "User with this email already exists"
-          });
+          })
           return
         }
   
@@ -153,7 +153,7 @@ const Page = () => {
                 {...register('name')}
                 key={5}
                 initial={{y : -10, x : -30, opacity : 0}} animate={{y : 0, x : 0, opacity : 1}} transition={{duration : 1, delay : .2}} className='border-b-[2px]  sm:w-96 border-[#4A3AFF] w-full mt-5 h-12 pl-3 outline-none md:w-[80%] md:mt-14' placeholder='Name' type="text" />
-                {errors.name && (
+                {errors?.name && (
                   <motion.p initial={{opacity : 0, y : -5}} animate={{opacity : 1, y : 0}} transition={{duration : 1, delay : .1}} className={`text-red-500 text-[12px] sm:text-base mt-2`}>
                     {errors.name.message}
                   </motion.p>
@@ -162,7 +162,7 @@ const Page = () => {
                 key={6}
                 {...register('NickName')} 
                 initial={{y : -10, x : -30, opacity : 0}} animate={{y : 0, x : 0, opacity : 1}} transition={{duration : 1, delay : .5}} className='border-b-[2px]  sm:w-96 border-[#4A3AFF] w-full mt-12 h-12 pl-3 outline-none md:w-[80%]' placeholder='Nick Name' type="text" />
-                {errors.NickName && (
+                {errors?.NickName && (
                   <motion.p initial={{opacity : 0, y : -5}} animate={{opacity : 1, y : 0}} transition={{duration : 1, delay : .1}} className={`text-red-500 text-[12px] sm:text-base mt-2`}>
                     {errors.NickName.message}
                   </motion.p>
